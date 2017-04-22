@@ -1,13 +1,18 @@
+import javax.xml.crypto.Data;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 /**
  *
  * @author Victoria
  */
 public class MainForm extends javax.swing.JFrame {
-
+    public ArrayList<DataTable> dt=new ArrayList<>();
+    public DataAnalyzer da=new DataAnalyzer();
     /**
      * Creates new form MainForm
      */
-    public MainForm() {
+    public MainForm() throws Exception {
         initComponents();
     }
 
@@ -18,7 +23,12 @@ public class MainForm extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
-    private void initComponents() {
+    private void initComponents() throws SQLException {
+        try {
+            dt= da.dataUpd();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         java.awt.GridBagConstraints gridBagConstraints;
 
         jPanelSearch = new javax.swing.JPanel();
@@ -193,13 +203,16 @@ public class MainForm extends javax.swing.JFrame {
         jPanelDB.setAutoscrolls(true);
         jPanelDB.setLayout(new java.awt.GridBagLayout());
 
+        //КОСТЫЛЬ
+        String[][]datAr=new String[dt.size()][4];
+        for(int i=0;i< datAr.length;i++){
+            datAr[i][0]=dt.get(i).audN;
+            datAr[i][1]=dt.get(i).plN;
+            datAr[i][2]=dt.get(i).funcAud;
+            datAr[i][3]=dt.get(i).po;
+        }
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-                new Object [][] {
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null}
-                },
+                datAr,
                 new String [] {
                         "Номер удитории", "Количество посадочных мест", "Функциональное назначение", "Установленное программное обеспечение"
                 }
@@ -343,7 +356,11 @@ public class MainForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainForm().setVisible(true);
+                try {
+                    new MainForm().setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
