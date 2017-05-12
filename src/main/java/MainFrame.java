@@ -1,7 +1,11 @@
 import javax.swing.*;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -603,7 +607,28 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
         jPanelFilters.add(jLabelSeats, gridBagConstraints);
 
-        jComboBoxFunctional.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        //КОСТЫЛЬ
+        List<String> tmpArr=new ArrayList<>();
+        for (int i=0;i<dt.size();i++){
+            boolean flag=true;
+            for (int j=0;j<tmpArr.size();j++){
+                if(tmpArr.get(j).equals(dt.get(i).funcAud)){
+                    flag=false;
+                }
+            }
+            if (flag) {
+                tmpArr.add(dt.get(i).funcAud);
+            }
+        }
+
+        Collections.sort(tmpArr);
+        tmpArr.add(0," - ");
+
+        String[] func=new String[tmpArr.size()];
+        tmpArr.toArray(func);
+
+        jComboBoxFunctional.setModel(new javax.swing.DefaultComboBoxModel<>(func));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -612,7 +637,7 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 3);
         jPanelFilters.add(jComboBoxFunctional, gridBagConstraints);
 
-        jComboBoxSoftware.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxSoftware.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {" - ", "Item 1", "Item 2", "Item 3", "Item 4" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
@@ -621,7 +646,27 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 3);
         jPanelFilters.add(jComboBoxSoftware, gridBagConstraints);
 
-        jComboBoxSeats.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        //КОСТЫЛЬ
+        tmpArr=new ArrayList<>();
+        for (int i=0;i<dt.size();i++){
+            boolean flag=true;
+            for (int j=0;j<tmpArr.size();j++){
+                if(tmpArr.get(j).equals(dt.get(i).plN)){
+                    flag=false;
+                }
+            }
+            if (flag) {
+                tmpArr.add(dt.get(i).plN);
+            }
+        }
+
+        Collections.sort(tmpArr);
+        tmpArr.add(0," - ");
+
+        String[] models=new String [tmpArr.size()];
+        tmpArr.toArray(models);
+
+        jComboBoxSeats.setModel(new javax.swing.DefaultComboBoxModel<>(models));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
@@ -630,7 +675,27 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 3);
         jPanelFilters.add(jComboBoxSeats, gridBagConstraints);
 
-        jComboBoxNumber.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        //КОСТЫЛЬ
+        tmpArr=new ArrayList<>();
+        for (int i=0;i<dt.size();i++){
+            boolean flag=true;
+            for (int j=0;j<tmpArr.size();j++){
+                if(tmpArr.get(j).equals(dt.get(i).audN)){
+                    flag=false;
+                }
+            }
+            if (flag) {
+                tmpArr.add(dt.get(i).audN);
+            }
+        }
+
+        Collections.sort(tmpArr);
+        tmpArr.add(0," - ");
+
+        String[] numbers=new String [tmpArr.size()];
+        tmpArr.toArray(numbers);
+
+        jComboBoxNumber.setModel(new javax.swing.DefaultComboBoxModel<>(numbers));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -736,6 +801,7 @@ public class MainFrame extends javax.swing.JFrame {
         jTable1.setCellSelectionEnabled(true);
         jTable1.setRowHeight(18);
         jTable1.getTableHeader().setReorderingAllowed(false);
+        jTable1.setRowSorter(new TableRowSorter<TableModel>(jTable1.getModel()));
         jTable1.getTableHeader().setPreferredSize(new Dimension(jTable1.getColumnModel().getTotalColumnWidth(),32));
         jScrollPane1.setViewportView(jTable1);
         jTable1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -795,7 +861,7 @@ public class MainFrame extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTableTaSamaya.getColumnModel().getColumn(0).setPreferredWidth(50); //table.getColumnModel().getColumn(i);
+        jTableTaSamaya.getColumnModel().getColumn(0).setPreferredWidth(50);
         jTableTaSamaya.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(jTableTaSamaya);
         if (jTableTaSamaya.getColumnModel().getColumnCount() > 0) {
