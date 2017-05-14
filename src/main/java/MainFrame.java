@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
@@ -84,6 +85,14 @@ public class MainFrame extends javax.swing.JFrame {
 
     public ArrayList<DataTable> dt=new ArrayList<>();
     public DataAnalyzer da=new DataAnalyzer();
+
+    private String [] audNumb;
+    private String[] func;
+    private String[] models;
+    private String[] numbers;
+    private String[] software;
+    private ArrayList<ArrayList<String> >arrayListPO;
+    private String [] softwareModel;
     // End of variables declaration
 
     /**
@@ -182,9 +191,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         jDialogAddClass.setTitle("Добавить аудиторию");
         jDialogAddClass.setName("Добавить аудиторию"); // NOI18N
+        jDialogAddClass.setPreferredSize(new java.awt.Dimension(356, 400));
+        jDialogAddClass.setMinimumSize(new java.awt.Dimension(400, 410));
         jDialogAddClass.getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        jPanel2.setPreferredSize(new java.awt.Dimension(300, 400));
+        //jPanel2.setPreferredSize(new java.awt.Dimension(300, 400));
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
         jLabel6.setText("Количество посадочных мест:");
@@ -394,6 +405,7 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.weighty = 0.1;
         jDialogDeleteClass.getContentPane().add(jPanel3, gridBagConstraints);
 
+        jDialogEditClass.setMinimumSize(new java.awt.Dimension(320, 470));
         jDialogEditClass.getContentPane().setLayout(new java.awt.GridBagLayout());
 
         jPanel4.setLayout(new java.awt.GridBagLayout());
@@ -407,7 +419,12 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(6, 5, 0, 0);
         jPanel4.add(jLabel3, gridBagConstraints);
 
-        jComboBoxSelectNumber.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        audNumb=new String[dt.size()];
+        for(int i=0;i<audNumb.length;i++){
+            audNumb[i]=dt.get(i).getAudN();
+        }
+
+        jComboBoxSelectNumber.setModel(new javax.swing.DefaultComboBoxModel<>(audNumb));
         jComboBoxSelectNumber.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxSelectNumberActionPerformed(evt);
@@ -456,7 +473,7 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(6, 5, 0, 0);
         jPanel4.add(jLabel4, gridBagConstraints);
 
-        jTextFieldEditSeats.setText("jTextField1");
+        //jTextFieldEditSeats.setText("jTextField1");
         jTextFieldEditSeats.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldEditSeatsActionPerformed(evt);
@@ -481,7 +498,7 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(18, 5, 0, 0);
         jPanel4.add(jLabel5, gridBagConstraints);
 
-        jTextFieldEditFunctional.setText("jTextField2");
+        //jTextFieldEditFunctional.setText("jTextField2");
         jTextFieldEditFunctional.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldEditFunctionalActionPerformed(evt);
@@ -505,6 +522,10 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(18, 5, 0, 0);
         jPanel4.add(jLabel9, gridBagConstraints);
+
+        /*jTextFieldEditSeats.setText("");
+        jTextFieldEditFunctional.setText("");*/
+        jTextAreaEditSoftware.setText("");
 
         jButtonEditOk.setText("Применить");
         jButtonEditOk.addActionListener(new java.awt.event.ActionListener() {
@@ -625,7 +646,7 @@ public class MainFrame extends javax.swing.JFrame {
         Collections.sort(tmpArr);
         tmpArr.add(0," - ");
 
-        String[] func=new String[tmpArr.size()];
+        func=new String[tmpArr.size()];
         tmpArr.toArray(func);
 
         jComboBoxFunctional.setModel(new javax.swing.DefaultComboBoxModel<>(func));
@@ -637,7 +658,36 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 3);
         jPanelFilters.add(jComboBoxFunctional, gridBagConstraints);
 
-        jComboBoxSoftware.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {" - ", "Item 1", "Item 2", "Item 3", "Item 4" }));
+        //КОСТЫЛЬ
+        makeSoftwareArr();
+
+        tmpArr=new ArrayList<>();
+        for (int i=0;i<arrayListPO.size();i++){
+            boolean flag=true;
+            for (int x=0;x<arrayListPO.get(i).size();x++) {
+                for (int j = 0; j < tmpArr.size(); j++) {
+                    if (tmpArr.get(j).equals(arrayListPO.get(i).get(x))) {
+                        flag = false;
+                    }
+                }
+                if (flag) {
+                    tmpArr.add(arrayListPO.get(i).get(x));
+                }
+            }
+        }
+
+        Collections.sort(tmpArr);
+        tmpArr.add(0," - ");
+
+        softwareModel=new String [tmpArr.size()];
+        tmpArr.toArray(softwareModel);
+
+        for (int i=0;i<softwareModel.length;i++){
+            System.out.println(softwareModel[i]);
+        }
+
+        //TODO фильтр по ПО пуст, нужен перебор в массив и передать этот массив ниже
+        jComboBoxSoftware.setModel(new javax.swing.DefaultComboBoxModel<>(softwareModel));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
@@ -663,7 +713,7 @@ public class MainFrame extends javax.swing.JFrame {
         Collections.sort(tmpArr);
         tmpArr.add(0," - ");
 
-        String[] models=new String [tmpArr.size()];
+        models=new String [tmpArr.size()];
         tmpArr.toArray(models);
 
         jComboBoxSeats.setModel(new javax.swing.DefaultComboBoxModel<>(models));
@@ -692,7 +742,7 @@ public class MainFrame extends javax.swing.JFrame {
         Collections.sort(tmpArr);
         tmpArr.add(0," - ");
 
-        String[] numbers=new String [tmpArr.size()];
+        numbers=new String [tmpArr.size()];
         tmpArr.toArray(numbers);
 
         jComboBoxNumber.setModel(new javax.swing.DefaultComboBoxModel<>(numbers));
@@ -764,13 +814,14 @@ public class MainFrame extends javax.swing.JFrame {
         jPanelDB.setAutoscrolls(true);
         jPanelDB.setLayout(new java.awt.GridBagLayout());
 
-        //КОСТЫЛЬ
-        String[][]datAr=new String[dt.size()][4];
+        makeSoftwareArr();
+
+        final String[][]datAr=new String[dt.size()][4];
         for(int i=0;i< datAr.length;i++){
             datAr[i][0]=dt.get(i).audN;
             datAr[i][1]=dt.get(i).plN;
             datAr[i][2]=dt.get(i).funcAud;
-            datAr[i][3]=dt.get(i).po;
+            datAr[i][3]=software[i];
         }
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -797,14 +848,16 @@ public class MainFrame extends javax.swing.JFrame {
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
         });
         jTable1.setCellSelectionEnabled(true);
-        jTable1.setRowHeight(18);
+        jTable1.setRowHeight(20);
         jTable1.getTableHeader().setReorderingAllowed(false);
         jTable1.setRowSorter(new TableRowSorter<TableModel>(jTable1.getModel()));
         jTable1.getTableHeader().setPreferredSize(new Dimension(jTable1.getColumnModel().getTotalColumnWidth(),32));
         jScrollPane1.setViewportView(jTable1);
         jTable1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        rowMagic();
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1044,13 +1097,25 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private void jMenuItemDeleteActionPerformed(java.awt.event.ActionEvent evt) {
-        Object[] numbersOfClassrooms={"1","2","3"};//TODO массив с номерами аудиторий из бд, для выбора удаляемой
+
+        Object[] numbersOfClassrooms=new Object[dt.size()];//TODO массив с номерами аудиторий из бд, для выбора удаляемой
+        for(int i=0;i<numbersOfClassrooms.length;i++){
+            numbersOfClassrooms[i]=dt.get(i).getAudN();
+        }
         String numberForDel = (String) JOptionPane.showInputDialog(this,
                 "Выберите номер аудитории, \n"+"которую необходимо удалить:",
                 "Удаление аудитории", JOptionPane.PLAIN_MESSAGE,
                 null, numbersOfClassrooms,numbersOfClassrooms[0]);
         if ((numberForDel != null) && (numberForDel.length() > 0)) {
             //TODO манипуляции по удалению аудитории numberForDel из бд
+            try {
+                da.dataDel(Integer.parseInt(numberForDel));
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            tableUpdate();
             return;
         }
     }
@@ -1061,14 +1126,71 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButtonViewAllActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO высветить все аудитории(SELECT *)
+        tableUpdate();
     }
 
     private void jButtonSearchActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO высветить аудитории по фильтрам
+        String numbFilt=jComboBoxNumber.getSelectedItem().toString();
+        String funcFilt=jComboBoxFunctional.getSelectedItem().toString();
+        String placesFilt=jComboBoxSeats.getSelectedItem().toString();
+        String poFilt=jComboBoxSoftware.getSelectedItem().toString();
+        dt.clear();
+        try {
+            dt=da.dataFilter(numbFilt,funcFilt,poFilt,placesFilt);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        makeSoftwareArr();
+        rowMagic();
+
+        int control=dt.size();
+        for (int i=0;i<control;i++){
+            jTable1.getModel().setValueAt(dt.get(i).audN,i,0);
+            jTable1.getModel().setValueAt(dt.get(i).plN,i,1);
+            jTable1.getModel().setValueAt(dt.get(i).funcAud,i,2);
+            jTable1.getModel().setValueAt(software[i],i,3);
+        }
+
+        for (int i=control;i<jTable1.getRowCount();i++){
+            jTable1.getModel().setValueAt(" ",i,0);
+            jTable1.getModel().setValueAt(" ",i,1);
+            jTable1.getModel().setValueAt(" ",i,2);
+            jTable1.getModel().setValueAt(" ",i,3);
+        }
+
+        jComboBoxNumber.setModel(new javax.swing.DefaultComboBoxModel<>(numbers));
+        jComboBoxSeats.setModel(new javax.swing.DefaultComboBoxModel<>(models));
+        jComboBoxFunctional.setModel(new javax.swing.DefaultComboBoxModel<>(func));
+        jComboBoxSoftware.setModel(new javax.swing.DefaultComboBoxModel<>(softwareModel));
+
     }
 
     private void jButtonOkActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO считываешь значения полей jDialogAddClass и добавляешь в БД новую аудиторию
+        DataTable dataAdd = new DataTable();
+        dataAdd.setAudN( jTextFieldNumber.getText());
+        dataAdd.setPlN(jTextFieldSeats.getText());
+        dataAdd.setFuncAud(  jTextFieldFunctional.getText());
+        dataAdd.setPo(  jTextAreaSoftware.getText());
+
+        try {
+            da.dataAdd(dataAdd);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            e.printStackTrace();
+        }
+
+        tableUpdate();
+        jTextFieldNumber.setText("");
+        jTextFieldFunctional.setText("");
+        jTextFieldSeats.setText("");
+        jTextAreaSoftware.setText("");
 
         jDialogAddClass.setVisible(false);
     }
@@ -1095,6 +1217,15 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButtonFindActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO находишь аудиторию по номеру из поля jComboBoxSelectNumber и передаешь значения по аудитории соответствующим полям jTextFieldEditSeats, jTextFieldEditFunctional, jTextAreaEditSoftware
+        for(int i=0;i<dt.size();i++){
+            if(dt.get(i).getAudN()==jComboBoxSelectNumber.getSelectedItem().toString()){
+                jTextFieldEditSeats.setText(dt.get(i).getPlN());
+                jTextFieldEditFunctional.setText(dt.get(i).getFuncAud());
+                jTextAreaEditSoftware.setText(dt.get(i).getPo());
+                break;
+            }
+        }
+
     }
 
     private void jTextFieldEditSeatsActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1107,6 +1238,26 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButtonEditOkActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO редактируешь аудиторию по номеру из поля jComboBoxSelectNumber и передаешь значения по аудитории в бд из соответствующих полей jTextFieldEditSeats, jTextFieldEditFunctional, jTextAreaEditSoftware
+        for(int i=0;i<dt.size();i++){
+            if(dt.get(i).getAudN()==jComboBoxSelectNumber.getSelectedItem().toString()){
+                try {
+                    da.dataUpd(Integer.parseInt(jComboBoxSelectNumber.getSelectedItem().toString()),Integer.parseInt(jComboBoxSelectNumber.getSelectedItem().toString()),jTextFieldEditSeats.getText(),jTextFieldEditFunctional.getText(),jTextAreaEditSoftware.getText());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+        //TODO вернуть комбобокс в инзначальное положение
+        jComboBoxSelectNumber.setModel(new javax.swing.DefaultComboBoxModel<>(audNumb));
+        jTextFieldEditSeats.setText("");
+        jTextFieldEditFunctional.setText("");
+        jTextAreaEditSoftware.setText("");
+        jDialogEditClass.setVisible(false);
+        jDialogEditClass.repaint();
+        tableUpdate();
 
     }
 
@@ -1139,12 +1290,100 @@ public class MainFrame extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 new MainFrame().setVisible(true);
             }
         });
     }
+    public void tableUpdate(){
+        dt.clear();
+        try {
+            dt=da.dataUpd();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
 
+
+        String[][]datChanged=new String[dt.size()][4];
+        for(int i=0;i< datChanged.length;i++){
+            datChanged[i][0]=dt.get(i).audN;
+            datChanged[i][1]=dt.get(i).plN;
+            datChanged[i][2]=dt.get(i).funcAud;
+            datChanged[i][3]=dt.get(i).po;
+        }
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+                datChanged,
+                new String [] {
+                        "Номер удитории",
+                        "Количество посадочных мест",
+                        "Функциональное назначение",
+                        "<html><center>Установленное<br/>программное обеспечение</center></html>"
+                }
+        ) {
+            Class[] types = new Class [] {
+                    java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            };
+
+            boolean[] canEdit = new boolean [] {
+                    false,false,false,false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+
+        DefaultTableModel tabmod=(DefaultTableModel)jTable1.getModel();
+        tabmod.fireTableDataChanged();
+        jTable1.repaint();
+    }
+
+    private void makeSoftwareArr(){
+        arrayListPO = new ArrayList<ArrayList<String>>();
+        for(int i=0;i<dt.size();i++){
+            String kek="";
+            String words=dt.get(i).getPo();
+            ArrayList<String> inOne=new ArrayList<>();
+            for(int j=0;j<words.length();j++){
+                if(dt.get(i).getPo().charAt(j)==';'){
+                    inOne.add(kek);
+                    kek="";
+                }
+                else{
+                    kek+=words.charAt(j);
+                }
+            }
+            inOne.add(kek);
+            arrayListPO.add(inOne);
+        }
+
+
+        software=new String[arrayListPO.size()];
+        for (int i=0; i<arrayListPO.size();i++){
+            software[i]="<html>";
+
+            for (int j=0;j<arrayListPO.get(i).size()-1;j++){
+                software[i]=software[i]+(arrayListPO.get(i).get(j)+"<br/>");
+            }
+
+            software[i]=software[i]+(arrayListPO.get(i).get(arrayListPO.get(i).size()-1)+"</html>");
+        }
+
+    }
+
+    private void rowMagic(){
+        jTable1.setRowHeight(17);
+        for(int i=0;i<software.length;i++){
+            jTable1.setRowHeight(i,17*arrayListPO.get(i).size());
+        }
+    }
 }

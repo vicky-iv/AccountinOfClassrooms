@@ -56,7 +56,10 @@ public class DataTable {
     String funcAud;
     String compNumb;
     String po;
-
+   String lastrowid="0";
+    public void setLastrowid(String ls){
+        lastrowid=ls;
+    }
 
     public DataTable(){
 
